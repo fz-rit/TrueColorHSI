@@ -220,7 +220,7 @@ def colorimetric_visualization(hyperspectral_data: spectral.image.ImageArray,
 
 if __name__ == "__main__":
     # Specify the folder path containing the ENVI files
-    input_folder = Path(r"G:\My Drive\projects_with_Dave\for_Fei\Data\Symeon")
+    input_folder = Path("path/to/Symeon-dataset")
     infile_base_name = "Symeon_VNIR_cropped"
     output_folder = input_folder / "output"
     saveimages = False

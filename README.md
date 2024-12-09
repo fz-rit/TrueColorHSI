@@ -2,8 +2,6 @@
 ## Overview
 TrueColorHSI is a Python toolkit that turns hyperspectral images into color visuals that reflect how we truly see the world. Unlike traditional methods that rely on a few chosen bands, it uses colorimetric science, standard illuminants, and standard observers to integrate over the whole visible spectrum. It generates vivid, accurate images that help users better understand and explore the input hyperspectral data.
 
-## Contributors
-Dave Messinger; Fei Zhang
 
 ## Setup Instructions
 
@@ -28,7 +26,7 @@ huggingface-cli login # To login, create and add your token according to the gui
 ```
 
 ---
-## Files structure
+## Files description
 | File/Folder                         | Description |
 |-------------------------------------|-------------|
 | `Accessories_from_colour.py`        | Tool function of getting the spectral power distribution of illuminant. |

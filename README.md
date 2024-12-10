@@ -47,13 +47,13 @@ python true_color_of_hyperspectral_image.py
 
 ## Example results
 ![Visualization from RGB bands](outputs/Symeon/Visualization_from_rgb_bands.jpg)
-*Figure 1. Visualization from appximated RGB bands.*
+*Figure 1. Visualization from appximated RGB bands (traditional method).*
 
 ![Visualization from colorimetric conversion](outputs/Symeon/Visualization_from_colorimetric_conversion.jpg)
-*Figure 2. Visualization from colorimetric conversion.*
+*Figure 2. Visualization from colorimetric conversion (our method).*
 
 ![True color visualization from different illuminants](outputs/Symeon/Vis_from_different_illuminants.png)
-*Figure 3. True color visualization by applying different standard illuminants: D50, D65, and D75.*
+*Figure 3. True color visualization using different standard illuminants (D50, D65, D75). Adjusting the chosen illuminant allows for tuning the color temperature.*
 
 
 

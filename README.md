@@ -57,9 +57,8 @@ python true_color_of_hyperspectral_image.py
 
 
 
-## Citations
-If you find this repository useful in your research, please consider the following citations.
-### Maximum Distance
+## Citation
+If you find this repository useful in your research, please consider the following citation.
 ```bib
 @article{amiri2024colorimetric,
   title={Colorimetric characterization of multispectral imaging systems for visualization of historical artifacts},

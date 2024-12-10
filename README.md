@@ -30,7 +30,7 @@ huggingface-cli login # To login, create and add your token according to the gui
 | File/Folder                         | Description |
 |-------------------------------------|-------------|
 | `Accessories_from_colour.py`        | Tool function of getting the spectral power distribution of illuminant. |
-| `colorimetric_based_visualization_of_hyperspec.py`           | The true color visualization script. |
+| `true_color_of_hyperspectral_image.py`           | The true color visualization script. |
 
 ---
 
@@ -40,10 +40,21 @@ huggingface-cli login # To login, create and add your token according to the gui
 ```bash
 git clone fz-rit-hf/rit-cis-hyperspectral-Symeon # you may need to request for access. 
 ```
-3) Adjust the input paths in lines 223 and 224 in the `colorimetric_based_visualization_of_hyperspec.py` file. Then run the script: 
+3) Adjust the input paths in lines 220-222 in the [true_color_of_hyperspectral_image.py](true_color_of_hyperspectral_image.py) file. Then run the script: 
 ```bash 
-python colorimetric_based_visualization_of_hyperspec.py
+python true_color_of_hyperspectral_image.py
 ```
+
+## Example results
+![Visualization from RGB bands](outputs/Symeon/Visualization_from_rgb_bands.jpg)
+*Figure 1. Visualization from appximated RGB bands.*
+
+![Visualization from colorimetric conversion](outputs/Symeon/Visualization_from_colorimetric_conversion.jpg)
+*Figure 2. Visualization from colorimetric conversion.*
+
+![True color visualization from different illuminants](outputs/Symeon/Vis_from_different_illuminants.png)
+*Figure 3. True color visualization by applying different standard illuminants: D50, D65, and D75.*
+
 
 
 ## Citations

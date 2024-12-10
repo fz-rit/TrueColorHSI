@@ -12,7 +12,8 @@ git clone https://github.com/fz-rit/TrueColorHSI.git
 # Navigate to the project directory
 cd TrueColorHSI
 
-# Create a new conda environment with Python 3.9 (not the latest python), since it's relatively more compatible to different packages as of 11/14/2024.
+# Create a new conda environment with Python 3.9 (not the latest python), 
+# since it's relatively more compatible to different packages as of 11/14/2024.
 conda create -n truecolorhsi_env python=3.9
 
 # Activate the newly created environment

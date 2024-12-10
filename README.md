@@ -6,23 +6,21 @@ TrueColorHSI is a Python toolkit that turns hyperspectral images into color visu
 ## Setup Instructions
 
 ```bash
-# Clone the repository, checkout the Github_Cloning_Guide.md if needed.
+# Clone the repo and cd to the folder.
 git clone https://github.com/fz-rit/TrueColorHSI.git
-
-# Navigate to the project directory
 cd TrueColorHSI
 
 # Create a new conda environment with Python 3.9 (not the latest python), 
 # since it's relatively more compatible to different packages as of 11/14/2024.
 conda create -n truecolorhsi_env python=3.9
-
-# Activate the newly created environment
 conda activate truecolorhsi_env
 
 # Install the dependencies with pip
 pip install spectral matplotlib scipy scikit-image pysptools
 pip install colour-science
 pip install huggingface_hub
+
+# [Optional] If you want to download the test dataset. Login to huggingface
 huggingface-cli login # To login, create and add your token according to the guide
 ```
 

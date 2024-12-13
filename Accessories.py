@@ -25,7 +25,7 @@ def get_illuminant_spd_and_xyz(illuminant: str = 'D65',
 
     # Get the spectral power distribution of illuminant D50, D65, or D75
     if illuminant == 'D50':
-        illuminant_spd = colour.SDS_ILLUMINANTS['D50'] # Image will look reddish
+        illuminant_spd = colour.SDS_ILLUMINANTS['D50'] # Image will look yellowish or reddish
     elif illuminant == 'D65':
         illuminant_spd = colour.SDS_ILLUMINANTS['D65'] # Ideal natural daylight, so hopefully the best
     elif illuminant == 'D75':
@@ -45,7 +45,8 @@ def get_illuminant_spd_and_xyz(illuminant: str = 'D65',
 
 
     # Align the shape of illuminant to the CMFs,
-    # since the CMFs has better granularity
+    # since the CMFs has better granularity: 
+    # CMFs_wavelengths(360, 830, 1) vs illuminant_wavelenghths(300, 780, 5)
     illuminant_spd = illuminant_spd.copy().align(cmfs.shape)
     # Get wavelengths and values
     wavelengths = illuminant_spd.wavelengths
@@ -101,6 +102,6 @@ def get_illuminant_spd_and_xyz(illuminant: str = 'D65',
 
 if __name__ == "__main__":
     wavelengths, illuminant_spd_values, xyz = get_illuminant_spd_and_xyz(illuminant='D65', 
-                                                            verbose=False, # flip it to True to checkout more details.
+                                                            verbose=True, # flip it to True to checkout more details.
                                                             plot_flag=True, 
                                                             run_example=True)

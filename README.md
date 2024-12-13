@@ -54,6 +54,9 @@ python true_color_of_hyperspectral_image.py
 ![True color visualization from different illuminants](outputs/Symeon/Vis_from_different_illuminants.png)
 *Figure 3. True color visualization using different standard illuminants (D50, D65, D75). Adjusting the chosen illuminant allows for tuning the color temperature.*
 
+![illuminant_spd_and_CIE_xyz](outputs/illuminant_spd_and_CIE_xyz.png)  
+*Figure 4. The spectral power distribution of the D65 illuminant and the CIE xyz curves.*
+
 
 
 ## Citation

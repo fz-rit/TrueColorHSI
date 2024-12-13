@@ -10,7 +10,7 @@ def get_illuminant_spd_and_xyz(illuminant: str = 'D65',
                     run_example: bool = False) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
 
     """
-    Get the D65 illuminant and the CIE 1931 2° standard observer color matching functions.
+    Get the illuminant (D50, D65, or D75) and the CIE 1931 2° standard observer color matching functions.
 
     Parameters:
     verbose: If True, print the illuminant and color matching functions values and wavelengths.
@@ -38,8 +38,8 @@ def get_illuminant_spd_and_xyz(illuminant: str = 'D65',
     cmfs = colour.MSDS_CMFS['CIE 1931 2 Degree Standard Observer']
 
     if verbose:
-        print("D65 Illuminant SPD:", illuminant_spd.values)
-        print("D65 Illuminant Wavelengths:", illuminant_spd.wavelengths)
+        print(f"{illuminant} Illuminant SPD:", illuminant_spd.values)
+        print(f"{illuminant} Illuminant Wavelengths:", illuminant_spd.wavelengths)
         print("CIE 1931 2° standard observer values:", cmfs.values)
         print("CIE 1931 2° standard observer wavelengths:", cmfs.wavelengths)
 
@@ -61,14 +61,13 @@ def get_illuminant_spd_and_xyz(illuminant: str = 'D65',
     xyz = np.stack((x_bar, y_bar, z_bar), axis=-1)
 
     if plot_flag:
-        # Plot the D65 illuminant SPD and the CIE 1931 2° standard observer color matching functions
+        # Plot the illuminant SPD and the CIE 1931 2° standard observer color matching functions
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8))
 
-        # Plot D65 Illuminant SPD
         ax1.plot(wavelengths, illuminant_spd_values, label='D65 SPD')
         ax1.set_xlabel('Wavelength (nm)')
         ax1.set_ylabel('Relative Power')
-        ax1.set_title('D65 Illuminant Spectral Power Distribution')
+        ax1.set_title(f"{illuminant}  Illuminant Spectral Power Distribution")
         ax1.legend()
 
         # Plot Color Matching Functions
@@ -91,11 +90,11 @@ def get_illuminant_spd_and_xyz(illuminant: str = 'D65',
         # Convert to sRGB
         RGB_display = colour.XYZ_to_sRGB(XYZ_normalized) * 255
         print("Displayable RGB (8-bit):", RGB_display)
-        print("XYZ Tristimulus Values of D65 Illuminant:")
+        print(f"XYZ Tristimulus Values of {illuminant} Illuminant:")
         print(XYZ)
-        print("Normalized XYZ Tristimulus Values of D65 Illuminant:")
+        print(f"Normalized XYZ Tristimulus Values of {illuminant} Illuminant:")
         print(XYZ_normalized)
-        print("RGB Values of D65 Illuminant:")
+        print(f"RGB Values of {illuminant} Illuminant:")
         print(RGB_display)
 
     return wavelengths, illuminant_spd_values, xyz

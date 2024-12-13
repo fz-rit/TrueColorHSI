@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 External File:
-- Accessories_from_colour.py
+- Accessories.py
 
 @author: Morteza, David Messenger, Fei Zhang
 """
@@ -93,7 +93,7 @@ def make_compare_plots(images: list,
     axes[1].set_title(f'{subplot_title}(contrast enhanced with CLAHE)')
     fig.suptitle(suptitle, fontsize=16)
     fig.tight_layout()
-    if saveimages == 1:
+    if saveimages:
         outfile = savefolder / f'{suptitle}.jpg'
         print('Writing to: ', outfile)
         plt.savefig(outfile, bbox_inches = 'tight', dpi = 300)
@@ -161,13 +161,13 @@ def colorimetric_visualization(hyperspectral_data: spectral.image.ImageArray,
     i_cutoff = get_band_index(bands, 830.0)
     hyperspec_wavelengths = bands[:i_cutoff]
 
-    std_wavelengths, D65_values, xyz = get_illuminant_spd_and_xyz(illuminant=illuminant, plot_flag=False, run_example=False)
+    std_wavelengths, illuminant_values, xyz = get_illuminant_spd_and_xyz(illuminant=illuminant, plot_flag=False, run_example=False)
 
-    # Create an interpolation function based on spectral power distribution of D65
-    interp_function = interp1d(std_wavelengths, D65_values, kind='linear', fill_value="extrapolate")
+    # Create an interpolation function based on spectral power distribution of illuminant
+    interp_function = interp1d(std_wavelengths, illuminant_values, kind='linear', fill_value="extrapolate")
 
-    # Interpolate the D65 data to match the wavelengths of the hyperspectral image
-    D65_interp = interp_function(hyperspec_wavelengths)
+    # Interpolate the illuminant data to match the wavelengths of the hyperspectral image
+    illuminant_interp = interp_function(hyperspec_wavelengths)
 
     # Create three interpolation functions based on the standard observer tristimulus values.
     interp_func_0 = interp1d(std_wavelengths, xyz[:, 0], kind='linear', fill_value='extrapolate')
@@ -185,7 +185,7 @@ def colorimetric_visualization(hyperspectral_data: spectral.image.ImageArray,
     visible_range_data = hyperspectral_data[:, :, :i_cutoff].reshape((-1, i_cutoff))
 
     # Convert Reflectance to CIEXYZ tristimulus values
-    XYZ = xyz_interp.T @ np.diag(D65_interp) @ visible_range_data.T # shape (3, m*n)
+    XYZ = xyz_interp.T @ np.diag(illuminant_interp) @ visible_range_data.T # shape (3, m*n)
 
     # Normalize the XYZ values to fit into the sRGB range
     XYZ_normalized = (XYZ - np.min(XYZ))  / (np.max(XYZ) - np.min(XYZ))
@@ -199,8 +199,8 @@ def colorimetric_visualization(hyperspectral_data: spectral.image.ImageArray,
     # So we need to clip the sRGB values to preserve colors as much as possible for display.
     SRGB_image = SRGB_image.clip(0, 1) 
 
-    # Normalize the data (if needed)
-    SRGB_norm = exposure.rescale_intensity(SRGB_image) 
+    # # Normalize the data (if needed)
+    # SRGB_norm = exposure.rescale_intensity(SRGB_image) 
 
     # Apply the contrast stretch (if needed)
     SRGB_clahe_on_L = skimage_clahe_for_color_image(SRGB_image)

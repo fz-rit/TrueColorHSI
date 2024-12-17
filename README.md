@@ -1,6 +1,6 @@
 # TrueColorHSI
 ## Overview
-Traditional methods for visualizing hyperspectral images often use only a few selected spectral bands, which can lead to incomplete or distorted images that don't reflect how we truly see the world. These approaches also overlook how our eyes naturally perceive color.
+Traditional methods for visualizing (previewing) hyperspectral images often use only a few selected spectral bands, which can lead to incomplete or distorted images that don't reflect how we truly see the world. These approaches also overlook how our eyes naturally perceive color.
 
 **TrueColorHSI** solves this by using colorimetric science, standard illuminants, and standard observers to integrate the entire visible spectrum. This results in vivid, accurate images that better represent hyperspectral data and are easier for users to understand, providing a more intuitive and natural way to explore the information.
 

@@ -20,9 +20,10 @@ conda activate truecolorhsi_env
 # Install the dependencies with pip
 pip install spectral matplotlib scipy scikit-image pysptools
 pip install colour-science
-pip install huggingface_hub
+
 
 # [Optional] If you want to download the test dataset. Login to huggingface
+pip install huggingface_hub
 huggingface-cli login # To login, create and add your token according to the guide
 ```
 

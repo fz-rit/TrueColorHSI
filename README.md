@@ -30,7 +30,7 @@ huggingface-cli login # To login, create and add your token according to the gui
 ## Files description
 | File/Folder                         | Description |
 |-------------------------------------|-------------|
-| `Accessories_from_colour.py`        | Tool function of getting the spectral power distribution of illuminant. |
+| `Accessories.py`        | Tool function of getting the spectral power distribution of illuminant. |
 | `true_color_of_hyperspectral_image.py`           | The true color visualization script. |
 
 ---

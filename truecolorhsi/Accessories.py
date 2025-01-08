@@ -2,6 +2,8 @@ import numpy as np
 import colour
 from colour.colorimetry import sd_to_XYZ
 import matplotlib.pyplot as plt
+from pathlib import Path
+import spectral
 
 
 def get_illuminant_spd_and_xyz(illuminant: str = 'D65', 
@@ -84,7 +86,7 @@ def get_illuminant_spd_and_xyz(illuminant: str = 'D65',
         plt.show()
 
     if run_example:
-        # Calculate the XYZ tristimulus values of the D65 illuminant
+        # Calculate the XYZ tristimulus values of the illuminant
         XYZ = sd_to_XYZ(illuminant_spd, cmfs=cmfs)
         # Normalize to fit into RGB range
         XYZ_normalized = XYZ / max(XYZ)  
@@ -100,8 +102,26 @@ def get_illuminant_spd_and_xyz(illuminant: str = 'D65',
 
     return wavelengths, illuminant_spd_values, xyz
 
-if __name__ == "__main__":
-    wavelengths, illuminant_spd_values, xyz = get_illuminant_spd_and_xyz(illuminant='D65', 
-                                                            verbose=True, # flip it to True to checkout more details.
-                                                            plot_flag=True, 
-                                                            run_example=True)
+
+def read_hsi_data(header_file: Path) -> spectral.image.ImageArray:
+    """
+    Read the hyperspectral image using spectral.
+
+    Parameters:
+    header_file: The header file of the hyperspectral image.
+    
+    Returns:
+    hyperspectral_data: The hyperspectral image data.
+
+    """
+    
+    spectral_image = spectral.open_image(header_file)
+    hyperspectral_data = spectral_image.load() 
+
+    return hyperspectral_data
+
+# if __name__ == "__main__":
+#     wavelengths, illuminant_spd_values, xyz = get_illuminant_spd_and_xyz(illuminant='D65', 
+#                                                             verbose=True, # flip it to True to checkout more details.
+#                                                             plot_flag=True, 
+#                                                             run_example=True)

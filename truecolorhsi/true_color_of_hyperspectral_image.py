@@ -6,15 +6,15 @@ External File:
 @author: Morteza, David Messenger, Fei Zhang
 """
 
-import spectral
 import numpy as np
 import matplotlib.pyplot as plt
 import colour
 import skimage.exposure as exposure
 from scipy.interpolate import interp1d
-from Accessories import get_illuminant_spd_and_xyz
+from truecolorhsi.Accessories import get_illuminant_spd_and_xyz, read_hsi_data
 from pathlib import Path
 import skimage
+from typing import Optional
 
 
 def get_band_index(bandarray: np.ndarray, WL: float) -> int:
@@ -64,7 +64,7 @@ def skimage_clahe_for_color_image(image: np.ndarray) -> np.ndarray:
 
     return equalized_image
 
-def make_compare_plots(images: list, 
+def make_compare_plots(images: tuple[np.ndarray, np.ndarray],
                        suptitle: str, 
                        subplot_title: str, 
                        saveimages: bool, 
@@ -73,7 +73,7 @@ def make_compare_plots(images: list,
     Make a comparison plot of the input images.
 
     Parameters:
-    images: list of images to be compared
+    images: a tuple of two images to be compared
     suptitle: the title of the plot
     subplot_title: the title of each subplot
     saveimages: whether to save the plot as an image
@@ -98,18 +98,26 @@ def make_compare_plots(images: list,
         print('Writing to: ', outfile)
         plt.savefig(outfile, bbox_inches = 'tight', dpi = 300)
 
-def vanilla_visualization(hyperspectral_data: spectral.image.ImageArray,
-                        saveimages: bool,
-                        savefolder: Path,) -> None:
+    plt.show()
+
+def vanilla_visualization(header_file: Path,
+                          visualize: bool = False,
+                        saveimages: bool = True,
+                        savefolder: Optional[Path] = None,) -> tuple[np.ndarray, np.ndarray]:
     """
     Display the hyperspectral image by directly visualizing the RGB bands.
 
     Parameters:
-    bands: array of band center wavelengths
+    header_file: the header file of the hyperspectral image
+    saveimages: whether to save the plot as an image
+    savefolder: the folder to save the image
 
     Returns:
-    None
+    display_images: a tuple of the original RGB image and the contrast-enhanced RGB image
     """
+
+    hyperspectral_data = read_hsi_data(header_file)
+
     # Get the approximate r,g,b bands from the HSI
     bands = np.array(hyperspectral_data.bands.centers)
     iblue = get_band_index(bands,450.0)
@@ -125,32 +133,37 @@ def vanilla_visualization(hyperspectral_data: spectral.image.ImageArray,
     # Apply more advanced contrast stretch: CLAHE (Contrast Limited Adaptive Histogram Equalization)
     viz_clahe_on_L = skimage_clahe_for_color_image(viz_norm)
 
-    display_images = [viz_simple, viz_clahe_on_L]
-    make_compare_plots(images=display_images, 
-                       suptitle='Visualization_from_rgb_bands', 
-                       subplot_title='RGB ',
-                       saveimages=saveimages, 
-                       savefolder=savefolder)
+    display_images = (viz_simple, viz_clahe_on_L)
+    if visualize:
+        savefolder = header_file.parent / 'outputs' if savefolder is None else savefolder
+        make_compare_plots(images=display_images, 
+                        suptitle='Visualization_from_rgb_bands', 
+                        subplot_title='RGB ',
+                        saveimages=saveimages, 
+                        savefolder=savefolder)
+
+    return display_images
 
 
-
-
-def colorimetric_visualization(hyperspectral_data: spectral.image.ImageArray, 
-                               illuminant: str,
-                               saveimages: bool, 
-                               savefolder: Path) -> None:
+def colorimetric_visualization(header_file: Path, 
+                               illuminant: str = 'D65',
+                               visualize: bool = False,
+                               saveimages: bool = True, 
+                               savefolder: Optional[Path] = None, ) -> tuple[np.ndarray, np.ndarray]:
     """
     Display the hyperspectral image by converting the reflectance data to sRGB using colorimetric methods.
 
     Parameters:
-    hyperspectral_data: the hyperspectral image data
+    header_file: the header file of the hyperspectral image
+    illuminant: the illuminant used for colorimetric conversion
     saveimages: whether to save the plot as an image
     savefolder: the folder to save the image
 
     Returns:
-    None
+    display_images: a tuple of the original sRGB image and the contrast-enhanced sRGB image
 
     """
+    hyperspectral_data = read_hsi_data(header_file)
 
     #Interpolating the standard data of standard illuminant and 
     #standard observer to coincide with the wavelengths that
@@ -204,28 +217,30 @@ def colorimetric_visualization(hyperspectral_data: spectral.image.ImageArray,
 
     # Apply the contrast stretch (if needed)
     SRGB_clahe_on_L = skimage_clahe_for_color_image(SRGB_image)
-    display_images = [SRGB_image, SRGB_clahe_on_L]
-    make_compare_plots(images=display_images,
+    display_images = (SRGB_image, SRGB_clahe_on_L)
+    savefolder = header_file.parent / 'outputs' if savefolder is None else savefolder
+    if visualize:
+        make_compare_plots(images=display_images,
                         suptitle='Visualization_from_colorimetric_conversion',
                         subplot_title=f'{illuminant}-based sRGB',
                         saveimages=saveimages,
                         savefolder=savefolder)
-
-    plt.show()
+    
+    return display_images
 
     
 
-if __name__ == "__main__":
-    # Specify the folder path containing the ENVI files
-    input_folder = Path("/home/fzhcis/mylab/data/rit-cis-hyperspectral-Symeon/data")
-    infile_base_name = "Symeon_VNIR_cropped"
-    output_folder = Path("outputs")
-    saveimages = False
-    illuminant = 'D75' # choose from 'D50', 'D55', 'D65', 'D75'
-    # Read the hyperspectral image using spectral
-    header_file = input_folder / (infile_base_name + ".hdr")
-    spectral_image = spectral.open_image(header_file)
-    hyperspectral_data = spectral_image.load() 
+# if __name__ == "__main__":
+#     # Specify the folder path containing the ENVI files
+#     input_folder = Path("/home/fzhcis/mylab/data/rit-cis-hyperspectral-Symeon/data")
+#     infile_base_name = "Symeon_VNIR_cropped"
+#     output_folder = Path("outputs")
+#     saveimages = False
+#     illuminant = 'D75' # choose from 'D50', 'D55', 'D65', 'D75'
+#     # Read the hyperspectral image using spectral
+#     header_file = input_folder / (infile_base_name + ".hdr")
+#     spectral_image = spectral.open_image(header_file)
+#     hyperspectral_data = spectral_image.load() 
 
-    vanilla_visualization(hyperspectral_data, saveimages, output_folder)
-    colorimetric_visualization(hyperspectral_data, illuminant, saveimages, output_folder)
+#     vanilla_display_images = vanilla_visualization(hyperspectral_data, saveimages, output_folder)
+#     colorimetric_display_images = colorimetric_visualization(hyperspectral_data, illuminant, saveimages, output_folder)

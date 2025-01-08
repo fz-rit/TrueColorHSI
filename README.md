@@ -1,6 +1,8 @@
 # TrueColorHSI
 ## Overview
-TrueColorHSI is a Python toolkit that turns hyperspectral images into color visuals that reflect how we truly see the world. Unlike traditional methods that rely on a few chosen bands, it uses colorimetric science, standard illuminants, and standard observers to integrate over the whole visible spectrum. It generates vivid, accurate images that help users better understand and explore the input hyperspectral data.
+Traditional methods for visualizing (previewing) hyperspectral images often use only a few selected spectral bands, which can lead to incomplete or distorted images that don't reflect how we truly see the world. These approaches also overlook how our eyes naturally perceive color.
+
+**TrueColorHSI** solves this by using colorimetric science, standard illuminants, and standard observers to integrate the entire visible spectrum. This results in vivid, accurate images that better represent hyperspectral data and are easier for users to understand, providing a more intuitive and natural way to explore the information.
 
 
 ## Setup Instructions
@@ -18,9 +20,10 @@ conda activate truecolorhsi_env
 # Install the dependencies with pip
 pip install spectral matplotlib scipy scikit-image pysptools
 pip install colour-science
-pip install huggingface_hub
+
 
 # [Optional] If you want to download the test dataset. Login to huggingface
+pip install huggingface_hub
 huggingface-cli login # To login, create and add your token according to the guide
 ```
 
@@ -28,7 +31,7 @@ huggingface-cli login # To login, create and add your token according to the gui
 ## Files description
 | File/Folder                         | Description |
 |-------------------------------------|-------------|
-| `Accessories_from_colour.py`        | Tool function of getting the spectral power distribution of illuminant. |
+| `Accessories.py`        | Tool function of getting the spectral power distribution of illuminant. |
 | `true_color_of_hyperspectral_image.py`           | The true color visualization script. |
 
 ---

@@ -11,10 +11,10 @@ import matplotlib.pyplot as plt
 import colour
 import skimage.exposure as exposure
 from scipy.interpolate import interp1d
-from truecolorhsi.Accessories import get_illuminant_spd_and_xyz, read_hsi_data
+from truecolorhsi.accessories import get_illuminant_spd_and_xyz, read_hsi_data
 from pathlib import Path
 import skimage
-from typing import Optional
+from typing import Optional, Union
 
 
 def get_band_index(bandarray: np.ndarray, WL: float) -> int:
@@ -100,7 +100,7 @@ def make_compare_plots(images: tuple[np.ndarray, np.ndarray],
 
     plt.show()
 
-def vanilla_visualization(header_file: Path,
+def vanilla_visualization(header_file: Union[str, Path],
                           visualize: bool = False,
                         saveimages: bool = True,
                         savefolder: Optional[Path] = None,) -> tuple[np.ndarray, np.ndarray]:
@@ -145,7 +145,7 @@ def vanilla_visualization(header_file: Path,
     return display_images
 
 
-def colorimetric_visualization(header_file: Path, 
+def colorimetric_visualization(header_file: Union[str, Path], 
                                illuminant: str = 'D65',
                                visualize: bool = False,
                                saveimages: bool = True, 
@@ -163,6 +163,7 @@ def colorimetric_visualization(header_file: Path,
     display_images: a tuple of the original sRGB image and the contrast-enhanced sRGB image
 
     """
+    
     hyperspectral_data = read_hsi_data(header_file)
 
     #Interpolating the standard data of standard illuminant and 

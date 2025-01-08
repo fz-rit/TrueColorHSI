@@ -1,6 +1,5 @@
 from pathlib import Path
-from truecolorhsi.true_color_of_hyperspectral_image import vanilla_visualization, colorimetric_visualization
-from truecolorhsi.Accessories import read_hsi_data
+from truecolorhsi.visualization import vanilla_visualization, colorimetric_visualization
 
 
 input_folder = Path("/home/fzhcis/mylab/data/rit-cis-hyperspectral-Symeon/data")

@@ -14,7 +14,7 @@ setup(
     ],
     author='Fei Zhang',
     author_email='fzhcis@rit.edu',
-    description='A package for True Color HSI processing',
+    description='A package for accurate and vivid visualization of hyperspectral images',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     url='https://github.com/fz-rit/TrueColorHSI',

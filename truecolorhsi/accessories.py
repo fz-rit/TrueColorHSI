@@ -4,6 +4,7 @@ from colour.colorimetry import sd_to_XYZ
 import matplotlib.pyplot as plt
 from pathlib import Path
 import spectral
+from typing import Union
 
 
 def get_illuminant_spd_and_xyz(illuminant: str = 'D65', 
@@ -103,7 +104,7 @@ def get_illuminant_spd_and_xyz(illuminant: str = 'D65',
     return wavelengths, illuminant_spd_values, xyz
 
 
-def read_hsi_data(header_file: Path) -> spectral.image.ImageArray:
+def read_hsi_data(header_file: Union[str, Path]) -> spectral.image.ImageArray:
     """
     Read the hyperspectral image using spectral.
 
@@ -114,8 +115,8 @@ def read_hsi_data(header_file: Path) -> spectral.image.ImageArray:
     hyperspectral_data: The hyperspectral image data.
 
     """
-    
-    spectral_image = spectral.open_image(header_file)
+    header = Path(header_file) if isinstance(header_file, str) else header_file
+    spectral_image = spectral.open_image(header)
     hyperspectral_data = spectral_image.load() 
 
     return hyperspectral_data

@@ -20,7 +20,6 @@ colorimetric_display_images = colorimetric_visualization(header_file, visualize=
 ```
 
 ### Notes:
-- This is the first official release, featuring the foundational tools for accurate hyperspectral image visualization.
 - The package provides methods that help translate complex hyperspectral data into intuitive, true-to-life images that are easier to interpret and analyze.
 
 ## Example results

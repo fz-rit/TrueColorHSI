@@ -5,59 +5,35 @@ Traditional methods for visualizing (previewing) hyperspectral images often use 
 **TrueColorHSI** solves this by using colorimetric science, standard illuminants, and standard observers to integrate the entire visible spectrum. This results in vivid, accurate images that better represent hyperspectral data and are easier for users to understand, providing a more intuitive and natural way to explore the information.
 
 
-## Setup Instructions
-
+### Installation:
+You can install `TrueColorHSI` via `pip`:
 ```bash
-# Clone the repo and cd to the folder.
-git clone https://github.com/fz-rit/TrueColorHSI.git
-cd TrueColorHSI
-
-# Create a new conda environment with Python 3.9 (not the latest python), 
-# since it's relatively more compatible to different packages as of 11/14/2024.
-conda create -n truecolorhsi_env python=3.9
-conda activate truecolorhsi_env
-
-# Install the dependencies with pip
-pip install spectral matplotlib scipy scikit-image pysptools
-pip install colour-science
-
-
-# [Optional] If you want to download the test dataset. Login to huggingface
-pip install huggingface_hub
-huggingface-cli login # To login, create and add your token according to the guide
+pip install TrueColorHSI
 ```
 
----
-## Files description
-| File/Folder                         | Description |
-|-------------------------------------|-------------|
-| `Accessories.py`        | Tool function of getting the spectral power distribution of illuminant. |
-| `true_color_of_hyperspectral_image.py`           | The true color visualization script. |
-
----
-
-## Usage
-1) Clone the repo and setup the environment;
-2) [Optional: if you want to run the test dataset] Clone the test dataset to a specific folder:
-```bash
-git clone fz-rit-hf/rit-cis-hyperspectral-Symeon # you may need to request for access. 
+### Usage:
+```python
+from truecolorhsi.visualization import vanilla_visualization, colorimetric_visualization
+hsi_header_file = "path/to/the/header/file"
+vanilla_display_images = vanilla_visualization(header_file)
+colorimetric_display_images = colorimetric_visualization(header_file, visualize=True, saveimages=True)
 ```
-3) Adjust the input paths in lines 220-222 in the [true_color_of_hyperspectral_image.py](true_color_of_hyperspectral_image.py) file. Then run the script: 
-```bash 
-python true_color_of_hyperspectral_image.py
-```
+
+### Notes:
+- This is the first official release, featuring the foundational tools for accurate hyperspectral image visualization.
+- The package provides methods that help translate complex hyperspectral data into intuitive, true-to-life images that are easier to interpret and analyze.
 
 ## Example results
-![Visualization from RGB bands](outputs/Symeon/Visualization_from_rgb_bands.jpg)
+![Visualization from RGB bands](examples/images/Symeon/Visualization_from_rgb_bands.jpg)
 *Figure 1. Visualization from appximated RGB bands (traditional method).*
 
-![Visualization from colorimetric conversion](outputs/Symeon/Visualization_from_colorimetric_conversion.jpg)
+![Visualization from colorimetric conversion](examples/images/Symeon/Visualization_from_colorimetric_conversion.jpg)
 *Figure 2. Visualization from colorimetric conversion (our method).*
 
-![True color visualization from different illuminants](outputs/Symeon/Vis_from_different_illuminants.png)
+![True color visualization from different illuminants](examples/images/Symeon/Vis_from_different_illuminants.png)
 *Figure 3. True color visualization using different standard illuminants (D50, D65, D75). Adjusting the chosen illuminant allows for tuning the color temperature.*
 
-![illuminant_spd_and_CIE_xyz](outputs/illuminant_spd_and_CIE_xyz.png)  
+![illuminant_spd_and_CIE_xyz](examples/images/illuminant_spd_and_CIE_xyz.png)  
 *Figure 4. The spectral power distribution of the D65 illuminant and the CIE xyz curves.*
 
 

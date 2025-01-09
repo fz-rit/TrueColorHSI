@@ -11,24 +11,33 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3  # Using the latest checkout version
 
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.9'
 
+      - name: Cache pip dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip  # Caching pip dependencies to speed up installs
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install setuptools wheel twine  # Install required tools
+          pip install setuptools wheel twine build  # Install the necessary build tools
 
       - name: Build the package
-        run: python setup.py sdist bdist_wheel  # Build the package
+        run: |
+          python -m build  # Preferred method for building distributions (sdist, wheel)
 
       - name: Upload to PyPI
         run: |
-          python -m twine upload --verbose dist/*
+          python -m twine upload --verbose dist/*  # Upload with verbose logging
         env:
-          TWINE_USERNAME: "__token__"
-          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+          TWINE_USERNAME: "__token__"  # Use the PyPI API token for authentication
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}  # Referencing the secret token

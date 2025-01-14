@@ -275,10 +275,10 @@ def colorimetric_visualization(input_path: Union[str, Path],
     
 
 if __name__ == "__main__":
-    # input_folder = Path("/home/fzhcis/mylab/data/rit-cis-hyperspectral-Symeon/data")
-    # infile_base_name = "Symeon_VNIR_cropped"
-    input_folder = Path("/home/fzhcis/mylab/gdrive/projects_with_Dave/for_Fei/Data/Ducky_and_Fragment")
-    infile_base_name = "fragment_cropped_FullSpec_2"
+    input_folder = Path("/home/fzhcis/mylab/data/rit-cis-hyperspectral-Symeon/data")
+    infile_base_name = "Symeon_VNIR_cropped"
+    # input_folder = Path("/home/fzhcis/mylab/gdrive/projects_with_Dave/for_Fei/Data/Ducky_and_Fragment")
+    # infile_base_name = "fragment_cropped_FullSpec_2"
     input_path = input_folder / (infile_base_name + ".hdr")
     output_folder = Path("examples/images")
     visualize = True

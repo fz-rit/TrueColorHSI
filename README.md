@@ -39,7 +39,7 @@ colorimetric_display_images = colorimetric_visualization(input_path, visualize=T
 Supportted data format:
 - [Symeon-Cultural-Heritage](https://huggingface.co/datasets/fz-rit-hf/rit-cis-hyperspectral-Symeon) ENVI HSI data, which comes with a `.hdr` file along with the data file (prefered)
 - [Heidelberg Porcine HyperSPECTRAL Imaging Dataset](https://heiporspectral.org/) - a binary file ends with `.dat`
-  - For more details about tests, checkout the note book [test_visualization_bio.ipynb](tests/test_visualization_bio.ipynb)
+  - For more details about tests, checkout the note book [test_visualization_bio.ipynb](notebooks/test_visualization_bio.ipynb)
 
 ### Notes:
 - The package provides methods that help translate complex hyperspectral data into intuitive, true-to-life images that are easier to interpret and analyze.

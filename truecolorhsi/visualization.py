@@ -11,12 +11,10 @@ import matplotlib.pyplot as plt
 import colour
 import skimage.exposure as exposure
 from scipy.interpolate import interp1d
-# from truecolorhsi.accessories import get_illuminant_spd_and_xyz, read_hsi_data
-# from truecolorhsi.accessories import get_illuminant_spd_and_xyz, read_hsi_data, get_band_index, read_hsi_data
 from pathlib import Path
 import skimage
 from typing import Optional, Union
-from accessories import get_illuminant_spd_and_xyz, get_band_index, percentile_stretching, read_HSI_data
+from truecolorhsi.accessories import get_illuminant_spd_and_xyz, get_band_index, percentile_stretching, read_HSI_data
 
 
 

@@ -12,6 +12,7 @@ setup(
         ' scikit-image',
         ' pysptools',
         'colour-science',
+        'ipykernel'
     ],
     author='Fei Zhang',
     author_email='fzhcis@rit.edu',

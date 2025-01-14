@@ -210,8 +210,4 @@ def percentile_stretching(image: np.ndarray, percent: int=1) -> np.ndarray:
     assert 0 <= percent <= 10, f"Percentile must be between 0 and 10, but got {percent}"
     p_low, p_high = np.percentile(image, (percent, 100-percent))
     return exposure.rescale_intensity(image, in_range=(p_low, p_high))
-# if __name__ == "__main__":
-#     wavelengths, illuminant_spd_values, xyz = get_illuminant_spd_and_xyz(illuminant='D65', 
-#                                                             verbose=True, # flip it to True to checkout more details.
-#                                                             plot_flag=True, 
-#                                                             run_example=True)
+

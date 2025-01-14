@@ -1,8 +1,23 @@
 # TrueColorHSI
 ## Overview
-Traditional methods for visualizing (previewing) hyperspectral images often use only a few selected spectral bands, which can lead to incomplete or distorted images that don't reflect how we truly see the world. These approaches also overlook how our eyes naturally perceive color.
 
-**TrueColorHSI** solves this by using colorimetric science, standard illuminants, and standard observers to integrate the entire visible spectrum. This results in vivid, accurate images that better represent hyperspectral data and are easier for users to understand, providing a more intuitive and natural way to explore the information.
+Traditional hyperspectral visualization methods convert images to RGB by averaging bands into fixed ranges corresponding to blue, green, and red. While practical, this method oversimplifies the data and may result in a loss of important details and nuances.
+
+**TrueColorHSI** takes a more sophisticated approach by using colorimetric science to process the entire visible spectrum, delivering vivid, perceptually accurate images. Additionally, it offers users the flexibility to adjust the illuminant (D50, D55, D65, D75), enhancing the interpretation of hyperspectral data under different lighting conditions.
+
+### Updated Comparison Table: Traditional Method vs. **TrueColorHSI**  
+
+| **Aspect**              | **Traditional Method**                                              | **✨ TrueColorHSI ✨**                                              |
+|-------------------------|---------------------------------------------------------------------|--------------------------------------------------------------------|
+| **Spectral Band Usage**  | ⚙️ Fixed RGB ranges (Blue, Green, Red)                              | 🌈 **Full visible spectrum utilization**                           |
+| **Color Basis**          | ⚙️ Based on peak wavelengths (~470, ~545, ~680 nm)                 | 🌈 **Colorimetric science-based**                                  |
+| **Color Accuracy**       | ⚠️ Approximate color reproduction                                   | ✅ **Highly accurate color representation**                         |
+| **Visualization Quality**| ⚠️ Simplified, may lose details                                    | ✅ **Vivid and detailed output**                                    |
+| **User Experience**      | ⚙️ Limited user control                                            | ✅ **Tunable illuminants (D50, D55, D65, D75)**                    |
+
+---
+
+
 
 
 ### Installation:
@@ -12,11 +27,16 @@ pip install TrueColorHSI
 ```
 
 ### Usage:
+Supportted data format:
+- [Symeon-Cultural-Heritage](https://huggingface.co/datasets/fz-rit-hf/rit-cis-hyperspectral-Symeon) ENVI HSI data, which comes with a `.hdr` file along with the data file
+- [Heidelberg Porcine HyperSPECTRAL Imaging Dataset](https://heiporspectral.org/) - a binary file ends with `.dat`
+
 ```python
 from truecolorhsi.visualization import vanilla_visualization, colorimetric_visualization
-hsi_header_file = "path/to/the/header/file"
-vanilla_display_images = vanilla_visualization(header_file)
-colorimetric_display_images = colorimetric_visualization(header_file, visualize=True, saveimages=True)
+from pathlib import Path
+input_path = Path("path/to/the/input/file")
+vanilla_display_images = vanilla_visualization(input_path)
+colorimetric_display_images = colorimetric_visualization(input_path, visualize=True, saveimages=True)
 ```
 
 ### Notes:

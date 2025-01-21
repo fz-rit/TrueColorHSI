@@ -6,6 +6,8 @@ from pathlib import Path
 import spectral
 from typing import Union
 from skimage import exposure
+import truecolorhsi.WBsRGB as wb_srgb
+# import WBsRGB as wb_srgb
 
 def get_illuminant_spd_and_xyz(illuminant: str = 'D65', 
                     verbose: bool = False, 
@@ -211,3 +213,30 @@ def percentile_stretching(image: np.ndarray, percent: int=1) -> np.ndarray:
     p_low, p_high = np.percentile(image, (percent, 100-percent))
     return exposure.rescale_intensity(image, in_range=(p_low, p_high))
 
+def white_balance(image: np.ndarray, gamut_mapping: int=2, upgraded: int=1) -> np.ndarray:
+    """
+    White balance the input image using the WBsRGB method.
+    Ref: https://github.com/mahmoudnafifi/WB_sRGB/tree/master
+
+    Parameters:
+        image: the input image
+        gamut_mapping: 1: scale (prefered for oversaturated images), 2: clip
+        upgraded: 0: the original WBsRGB, 1: the upgraded WBsRGB with more training data
+
+
+    Returns:
+    outImg: the white balanced image
+    """
+    print(f"WB Input range: [{np.min(image)}, {np.max(image)}]")
+    wbModel = wb_srgb.WBsRGB(gamut_mapping,
+                            upgraded)
+    outImg = wbModel.correctImage(image)
+
+    if np.min(outImg) < 0 or np.max(outImg) > 1:
+        print("-- Warning: White balance output out of range [0, 1].")
+        outImg = np.clip(outImg, 0, 1)
+        print("-- Clipped to [0, 1].")
+
+    print(f"WB Output range: [{np.min(outImg)}, {np.max(outImg)}]")
+
+    return outImg

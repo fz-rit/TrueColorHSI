@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='TrueColorHSI',  
-    version='0.1.3',
+    version='0.1.4',
     packages=find_packages(),
     include_package_data=True,  # Ensure package data is included
     install_requires=[
@@ -16,7 +16,7 @@ setup(
     ],
     author='Fei Zhang',
     author_email='fzhcis@rit.edu',
-    description='A package for accurate and vivid visualization of hyperspectral images',
+    description='A package for accurate and vivid visualization of hyperspectral and multispectral images',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     url='https://github.com/fz-rit/TrueColorHSI',

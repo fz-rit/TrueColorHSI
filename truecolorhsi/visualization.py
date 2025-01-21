@@ -302,6 +302,7 @@ if __name__ == "__main__":
 
     output_folder = Path("examples") / input_path.stem
     output_folder.mkdir(parents=True, exist_ok=True)
+    print(f"Output folder: {output_folder}")
     visualize = True
     saveimages = True
     illuminant = 'D65' # choose from 'D50', 'D55', 'D65', 'D75'

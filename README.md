@@ -17,7 +17,7 @@ Traditional hyperspectral visualization methods convert images to RGB by averagi
 
 ---
 
-
+Note: The input data need to cover the full visible spectrum (400-700 nm) to achieve the best results. If the data is not full-spectrum, the package will still work, but the output may not be as accurate.
 
 
 ### Installation:
@@ -45,16 +45,18 @@ Supportted data format:
 - The package provides methods that help translate complex hyperspectral data into intuitive, true-to-life images that are easier to interpret and analyze.
 
 ## Example results
-![Visualization from RGB bands](examples/images/Symeon/Visualization_from_rgb_bands.jpg)
-*Figure 1. Visualization from appximated RGB bands (traditional method).*
+<p align="center">
+  <img src="examples/Symeon_VNIR_cropped/Visualization_from_rgb_bands.jpg" alt="Visualization from RGB bands" width="45%">
+  <img src="examples/Symeon_VNIR_cropped/Visualization_from_colorimetric_conversion_D65.jpg" alt="Visualization from colorimetric conversion" width="45%">
+</p>
+<p align="center">
+  <em>Figure 1. Visualization from approximated RGB bands (traditional method) on the left. Figure 2. Visualization from colorimetric conversion (our method) on the right.</em>
+</p>
 
-![Visualization from colorimetric conversion](examples/images/Symeon/Visualization_from_colorimetric_conversion.jpg)
-*Figure 2. Visualization from colorimetric conversion (our method).*
+![True color visualization from different illuminants](examples/Vis_from_different_illuminants.png)
+*Figure 3. True color visualization using different standard illuminants (D50, D65, D75) (white balance not applied). Adjusting the chosen illuminant allows for tuning the color temperature.*
 
-![True color visualization from different illuminants](examples/images/Symeon/Vis_from_different_illuminants.png)
-*Figure 3. True color visualization using different standard illuminants (D50, D65, D75). Adjusting the chosen illuminant allows for tuning the color temperature.*
-
-![illuminant_spd_and_CIE_xyz](examples/images/illuminant_spd_and_CIE_xyz.png)  
+![illuminant_spd_and_CIE_xyz](examples/illuminant_spd_and_CIE_xyz.png)  
 *Figure 4. The spectral power distribution of the D65 illuminant and the CIE xyz curves.*
 
 

@@ -277,7 +277,7 @@ def colorimetric_visualization(input_path: Union[str, Path],
     if visualize:
         savefolder = input_path.parent / 'outputs' if savefolder is None else savefolder
         make_compare_plots(images=display_images,
-                        suptitle=f'Visualization_from_colorimetric_conversion {illuminant}',
+                        suptitle=f'Visualization_from_colorimetric_conversion_{illuminant}',
                         subplot_titles=subplot_titles,
                         saveimages=saveimages,
                         savefolder=savefolder)

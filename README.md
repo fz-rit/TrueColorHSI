@@ -5,7 +5,6 @@ Traditional hyperspectral visualization methods convert images to RGB by averagi
 
 **TrueColorHSI** takes a more sophisticated approach by using colorimetric science to process the entire visible spectrum, delivering vivid, perceptually accurate images. Additionally, it offers users the flexibility to adjust the illuminant (D50, D55, D65, D75), enhancing the interpretation of hyperspectral data under different lighting conditions.
 
-### Updated Comparison Table: Traditional Method vs. **TrueColorHSI**  
 
 | **Aspect**              | **Traditional Method**                                              | **✨ TrueColorHSI ✨**                                              |
 |-------------------------|---------------------------------------------------------------------|--------------------------------------------------------------------|

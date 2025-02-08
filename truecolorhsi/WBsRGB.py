@@ -17,7 +17,6 @@
 
 
 import numpy as np
-import numpy.matlib
 import cv2
 from skimage.feature import blob_log
 from skimage.color import rgb2gray

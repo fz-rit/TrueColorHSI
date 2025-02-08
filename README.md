@@ -1,4 +1,4 @@
-# TrueColorHSI
+# TrueColorHSI <img src="assets/TrueColorHSI_logo_256_by_256.png" alt="Logo" width="50">
 ## Overview
 
 Traditional hyperspectral visualization methods convert images to RGB by averaging bands into fixed ranges corresponding to blue, green, and red. While practical, this method oversimplifies the data and may result in a loss of important details and nuances.

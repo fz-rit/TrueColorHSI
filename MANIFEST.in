@@ -3,3 +3,4 @@ include LICENSE
 recursive-include examples *
 recursive-include models *
 recursive-include notebooks *
+recursive-include assets *

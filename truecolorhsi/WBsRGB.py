@@ -20,6 +20,7 @@ import numpy as np
 import cv2
 from skimage.feature import blob_log
 from skimage.color import rgb2gray
+import pkg_resources
 
 class Classic_WB:
     """
@@ -123,16 +124,16 @@ class Classic_WB:
 class WBsRGB:
   def __init__(self, gamut_mapping=2, upgraded=0):
     if upgraded == 1:
-      self.features = np.load('models/features+.npy')  # encoded features
-      self.mappingFuncs = np.load('models/mappingFuncs+.npy')  # correct funcs
-      self.encoderWeights = np.load('models/encoderWeights+.npy')  # PCA matrix
-      self.encoderBias = np.load('models/encoderBias+.npy')  # PCA bias
+      self.features = np.load(pkg_resources.resource_filename(__name__, 'models/features+.npy'))  # encoded features
+      self.mappingFuncs = np.load(pkg_resources.resource_filename(__name__, 'models/mappingFuncs+.npy'))  # correct funcs
+      self.encoderWeights = np.load(pkg_resources.resource_filename(__name__, 'models/encoderWeights+.npy'))  # PCA matrix
+      self.encoderBias = np.load(pkg_resources.resource_filename(__name__, 'models/encoderBias+.npy'))  # PCA bias
       self.K = 75  # K value for NN searching
     else:
-      self.features = np.load('models/features.npy')  # encoded features
-      self.mappingFuncs = np.load('models/mappingFuncs.npy')  # correction funcs
-      self.encoderWeights = np.load('models/encoderWeights.npy')  # PCA matrix
-      self.encoderBias = np.load('models/encoderBias.npy')  # PCA bias
+      self.features = np.load(pkg_resources.resource_filename(__name__, 'models/features.npy'))  # encoded features
+      self.mappingFuncs = np.load(pkg_resources.resource_filename(__name__, 'models/mappingFuncs.npy'))  # correction funcs
+      self.encoderWeights = np.load(pkg_resources.resource_filename(__name__, 'models/encoderWeights.npy'))  # PCA matrix
+      self.encoderBias = np.load(pkg_resources.resource_filename(__name__, 'models/encoderBias.npy'))  # PCA bias
       self.K = 25  # K value for nearest neighbor searching
 
     self.sigma = 0.25  # fall-off factor for KNN blending

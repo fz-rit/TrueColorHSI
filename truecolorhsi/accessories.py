@@ -6,6 +6,9 @@ from pathlib import Path
 import spectral
 from typing import Union
 from skimage import exposure
+import truecolorhsi.WBsRGB as wb_srgb
+# import WBsRGB as wb_srgb
+
 
 def get_illuminant_spd_and_xyz(illuminant: str = 'D65', 
                     verbose: bool = False, 
@@ -211,3 +214,40 @@ def percentile_stretching(image: np.ndarray, percent: int=1) -> np.ndarray:
     p_low, p_high = np.percentile(image, (percent, 100-percent))
     return exposure.rescale_intensity(image, in_range=(p_low, p_high))
 
+def white_balance(image: np.ndarray, 
+                     method: str = "ml_wb") -> np.ndarray:
+    """
+    White balance the input image using the WBsRGB method.
+    Ref: https://github.com/mahmoudnafifi/WB_sRGB/tree/master
+
+    Parameters:
+        image: the input image
+        gamut_mapping: 1: scale (prefered for oversaturated images), 2: clip
+        upgraded: 0: the original WBsRGB, 1: the upgraded WBsRGB with more training data
+
+
+    Returns:
+    outImg: the white balanced image
+    """
+    if method == "ml_wb":
+        wbModel = wb_srgb.WBsRGB(gamut_mapping=2,
+                                upgraded=1)
+        outImg = wbModel.correctImage(image)
+
+        if np.min(outImg) < 0 or np.max(outImg) > 1:
+            print("-- Warning: White balance output out of range [0, 1].")
+            outImg = np.clip(outImg, 0, 1)
+            print("-- Clipped to [0, 1].")
+
+        print(f"WB Output range: [{np.min(outImg)}, {np.max(outImg)}]")
+    elif method == "gray_world":
+        classic_wb = wb_srgb.Classic_WB()
+        outImg = classic_wb.gray_world_white_balance(image)
+    elif method == "white_patch":
+        classic_wb = wb_srgb.Classic_WB()
+        outImg = classic_wb.white_patch_white_balance(image)
+    else:
+        raise ValueError(f"Invalid white balance method - {method}. Choose from 'ml_wb', 'gray_world', or 'white_patch'.")
+
+
+    return outImg

@@ -13,8 +13,10 @@ import skimage.exposure as exposure
 from scipy.interpolate import interp1d
 from pathlib import Path
 import skimage
-from typing import Optional, Union
-from truecolorhsi.accessories import get_illuminant_spd_and_xyz, get_band_index, percentile_stretching, read_HSI_data
+from typing import Optional, Union, List
+from truecolorhsi.accessories import get_illuminant_spd_and_xyz, get_band_index, percentile_stretching, read_HSI_data, white_balance
+# 
+# from accessories import get_illuminant_spd_and_xyz, get_band_index, percentile_stretching, read_HSI_data, white_balance
 
 
 
@@ -49,7 +51,7 @@ def skimage_clahe_for_color_image(image: np.ndarray) -> np.ndarray:
 
     return equalized_image
 
-def hsi_to_rgb(hsi_cube: np.ndarray, 
+def vanilla_hsi_to_rgb(hsi_cube: np.ndarray, 
                band_centers: np.ndarray,
                input_path: Path) -> np.ndarray:
     """
@@ -89,14 +91,14 @@ def hsi_to_rgb(hsi_cube: np.ndarray,
     
     
     # Average pixel values in the specified ranges
-    blue = np.mean(hsi_cube[:, :, iblue_start:iblue_end], axis=2)
-    green = np.mean(hsi_cube[:, :, igreen_start:igreen_end], axis=2)
-    red = np.mean(hsi_cube[:, :, ired_start:ired_end], axis=2)
+    blue = np.mean(hsi_cube[:, :, iblue_start:iblue_end+1], axis=2)
+    green = np.mean(hsi_cube[:, :, igreen_start:igreen_end+1], axis=2)
+    red = np.mean(hsi_cube[:, :, ired_start:ired_end+1], axis=2)
     print("- RGB bands extracted from the hyperspectral image.")
     print(f"  Aggregated bands: \n"
-          f"    blue\t[{band_centers[iblue_start]}-{band_centers[iblue_end-1]} nm] \n"
-          f"    green\t[{band_centers[igreen_start]}-{band_centers[igreen_end-1]} nm] \n"
-          f"    red\t\t[{band_centers[ired_start]}-{band_centers[ired_end-1]} nm]")
+          f"    blue:[{band_centers[iblue_start : iblue_end+1]} nm] \n"
+          f"    green:[{band_centers[igreen_start : igreen_end+1]} nm] \n"
+          f"    red:[{band_centers[ired_start : ired_end+1]} nm]")
     
     # Stack channels to form an RGB image
     viz_simple = np.stack((red, green, blue), axis=-1)
@@ -104,44 +106,37 @@ def hsi_to_rgb(hsi_cube: np.ndarray,
 
 def make_compare_plots(images: tuple[np.ndarray, np.ndarray],
                        suptitle: str, 
-                       subplot_title: str, 
-                       saveimages: bool, 
-                       savefolder: Path) -> None:
+                       subplot_titles: List[str],
+                       ) -> None:
     """
     Make a comparison plot of the input images.
 
     Parameters:
     images: a tuple of two images to be compared
     suptitle: the title of the plot
-    subplot_title: the title of each subplot
-    saveimages: whether to save the plot as an image
-    savefolder: the folder to save the image
+    subplot_titles: the title of each subplot
 
     Returns:
     None
     """
-    fig, axes = plt.subplots(1, 2, figsize=(18, 8))
+    len_images = len(images)
+    fig, axes = plt.subplots(len_images, 1, figsize=(8, 6*len_images))
 
-    axes[0].imshow(images[0])
-    axes[0].axis('off')
-    axes[0].set_title(subplot_title)
+    for i, image in enumerate(images):
+        axes[i].imshow(image)
+        axes[i].axis('off')
+        axes[i].set_title(f'{subplot_titles[i]}')
 
-    axes[1].imshow(images[1])
-    axes[1].axis('off')
-    axes[1].set_title(f'{subplot_title}(contrast enhanced with CLAHE)')
     fig.suptitle(suptitle, fontsize=16)
     fig.tight_layout()
-    if saveimages:
-        outfile = savefolder / f'{suptitle}.jpg'
-        print('Writing to: ', outfile)
-        plt.savefig(outfile, bbox_inches = 'tight', dpi = 300)
 
     plt.show()
 
 def vanilla_visualization(input_path: Union[str, Path],
                           visualize: bool = False,
                           stretch_percent: int = 2,
-                          saveimages: bool = True,
+                          wb_method: str = 'ml_wb',
+                          saveimages: bool = False,
                           savefolder: Optional[Path] = None,) -> tuple[np.ndarray, np.ndarray]:
     """
     Display the hyperspectral image by directly visualizing the RGB bands.
@@ -157,22 +152,36 @@ def vanilla_visualization(input_path: Union[str, Path],
     print("=============Vanilla Visualization===============")
     hyperspec_cube, band_centers = read_HSI_data(input_path)
 
-    viz_simple = hsi_to_rgb(hyperspec_cube, band_centers, input_path)
-    viz_norm = percentile_stretching(viz_simple, stretch_percent)
+    viz_rgb = vanilla_hsi_to_rgb(hyperspec_cube, band_centers, input_path)
+    print("- RGB image extracted from the hyperspectral image.")
+    viz_norm = exposure.rescale_intensity(viz_rgb, out_range=(0, 1))
+    print("- RGB image normalized to (0, 1) to fit into the sRGB range.")    
+
+    viz_stretch = percentile_stretching(viz_norm, stretch_percent)
     print(f"- Percentile stretching applied to the RGB image. (%{stretch_percent})")
 
+    viz_norm_wb = white_balance(viz_stretch, method=wb_method)
+    print("- White balance applied to the RGB image.")
+
     # Apply more advanced contrast stretch: CLAHE (Contrast Limited Adaptive Histogram Equalization)
-    viz_clahe_on_L = skimage_clahe_for_color_image(viz_norm)
+    viz_clahe_on_L = skimage_clahe_for_color_image(viz_norm_wb)
     print("- CLAHE applied to the RGB image.")
 
-    display_images = (viz_norm, viz_clahe_on_L)
+    display_images = (viz_norm, viz_stretch, viz_norm_wb, viz_clahe_on_L)
+    subplot_titles = ['RGB', 
+                      f'RGB ({stretch_percent}% stretch)', 
+                      f'RGB (stretch+{wb_method})', 
+                      f'RGB (stretch+{wb_method}+CLAHE)']
     if visualize:
-        savefolder = input_path.parent / 'outputs' if savefolder is None else savefolder
         make_compare_plots(images=display_images, 
                         suptitle='Visualization_from_rgb_bands', 
-                        subplot_title='RGB ',
-                        saveimages=saveimages, 
-                        savefolder=savefolder)
+                        subplot_titles=subplot_titles,
+                        )
+    
+    if saveimages:
+        savefolder = input_path.parent / 'outputs' if savefolder is None else savefolder
+        for title, image in zip(subplot_titles, display_images):
+            plt.imsave(savefolder / f'{input_path.stem}_{title}.png', image)
 
     return display_images
 
@@ -180,8 +189,9 @@ def vanilla_visualization(input_path: Union[str, Path],
 def colorimetric_visualization(input_path: Union[str, Path], 
                                illuminant: str = 'D65',
                                stretch_percent: int = 2,
+                               wb_method: str = 'ml_wb',
                                visualize: bool = False,
-                               saveimages: bool = True, 
+                               saveimages: bool = False, 
                                savefolder: Optional[Path] = None, ) -> tuple[np.ndarray, np.ndarray]:
     """
     Display the hyperspectral image by converting the reflectance data to sRGB using colorimetric methods.
@@ -253,35 +263,77 @@ def colorimetric_visualization(input_path: Union[str, Path],
     print("- sRGB values clipped to fit into the displayable range.")
 
     # Stretch the sRGB image to enhance the contrast
-    SRGB_image = percentile_stretching(SRGB_image, stretch_percent)
+    SRGB_image_percet_stretch = percentile_stretching(SRGB_image, stretch_percent)
     print(f"- Percentile stretching applied to the sRGB image. (%{stretch_percent})")
 
+    # Apply white balance to the sRGB image
+    SRGB_image_wb = white_balance(SRGB_image_percet_stretch, method=wb_method)
+    print("- White balance applied to the sRGB image.")
+
     # Apply the contrast stretch (if needed)
-    SRGB_clahe_on_L = skimage_clahe_for_color_image(SRGB_image)
+    SRGB_clahe_on_L = skimage_clahe_for_color_image(SRGB_image_wb)
     print("- CLAHE applied to the sRGB image.")
-    display_images = (SRGB_image, SRGB_clahe_on_L)
+    display_images = (SRGB_image, SRGB_image_percet_stretch, SRGB_image_wb, SRGB_clahe_on_L)
+    subplot_titles = ['sRGB', 
+                      f'sRGB ({stretch_percent}% stretch)', 
+                      f'sRGB (stretch+{wb_method})', 
+                      f'sRGB (stretch+{wb_method}+CLAHE)']
     if visualize:
-        savefolder = input_path.parent / 'outputs' if savefolder is None else savefolder
         make_compare_plots(images=display_images,
-                        suptitle='Visualization_from_colorimetric_conversion',
-                        subplot_title=f'{illuminant}-based sRGB',
-                        saveimages=saveimages,
-                        savefolder=savefolder)
+                        suptitle=f'Visualization_from_colorimetric_conversion_{illuminant}',
+                        subplot_titles=subplot_titles,
+                        )
+        
+    if saveimages:
+        savefolder = input_path.parent / 'outputs' if savefolder is None else savefolder
+        for title, image in zip(subplot_titles, display_images):
+            plt.imsave(savefolder / f'{input_path.stem}_{title}.png', image)
     
     return display_images
 
     
 
 if __name__ == "__main__":
-    input_folder = Path("/home/fzhcis/mylab/data/rit-cis-hyperspectral-Symeon/data")
-    infile_base_name = "Symeon_VNIR_cropped"
+    # input_folder = Path("/home/fzhcis/mylab/data/rit-cis-hyperspectral-Symeon/data")
+    # infile_base_name = "Symeon_VNIR_cropped"
+
     # input_folder = Path("/home/fzhcis/mylab/gdrive/projects_with_Dave/for_Fei/Data/Ducky_and_Fragment")
     # infile_base_name = "fragment_cropped_FullSpec_2"
+
+    # input_folder = Path("/home/fzhcis/mylab/data/HeiPorSPECTRAL_example/data/subjects/P086/2021_04_15_09_22_02")
+    # input_path = input_folder / "2021_04_15_09_22_02_SpecCube.dat"
+
+    input_folder = Path("/home/fzhcis/mylab/data/dave-multispectral-truecolorhsi-whitebalance")
+    infile_base_name = "MSS_11_UR_35v_DataCube"
     input_path = input_folder / (infile_base_name + ".hdr")
-    output_folder = Path("examples/images")
-    visualize = True
+
+    output_folder = Path("examples") / input_path.stem
+    output_folder.mkdir(parents=True, exist_ok=True)
+    print(f"Output folder: {output_folder}")
+    visualize = False
     saveimages = True
     illuminant = 'D65' # choose from 'D50', 'D55', 'D65', 'D75'
 
-    vanilla_display_images = vanilla_visualization(input_path, visualize=visualize, saveimages=saveimages, savefolder=output_folder)
-    colorimetric_display_images = colorimetric_visualization(input_path, illuminant, visualize=visualize, saveimages=saveimages, savefolder=output_folder)
+    # for wb_method in ['ml_wb', 'gray_world', 'white_patch']:
+    #     vanilla_display_images = vanilla_visualization(input_path, 
+    #                                                    wb_method=wb_method, # 'ml_wb' or 'gray_world' or 'white_patch'
+    #                                                    visualize=visualize, 
+    #                                                    saveimages=saveimages, 
+    #                                                    savefolder=output_folder)
+    #     colorimetric_display_images = colorimetric_visualization(input_path, 
+    #                                                              illuminant, 
+    #                                                              wb_method=wb_method,
+    #                                                              visualize=visualize, 
+    #                                                              saveimages=saveimages, 
+    #                                                              savefolder=output_folder)
+    vanilla_display_images = vanilla_visualization(input_path, 
+                                                   wb_method='white_patch', # 'ml_wb' or 'gray_world' or 'white_patch'
+                                                   visualize=visualize, 
+                                                   saveimages=saveimages, 
+                                                   savefolder=output_folder)
+    colorimetric_display_images = colorimetric_visualization(input_path, 
+                                                             illuminant, 
+                                                             wb_method='white_patch',
+                                                             visualize=visualize, 
+                                                             saveimages=saveimages, 
+                                                             savefolder=output_folder)

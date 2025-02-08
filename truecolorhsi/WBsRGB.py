@@ -112,11 +112,12 @@ class Classic_WB:
         k_R = max_G / max_R
         k_B = max_G / max_B
         
+        outImg = image.copy()
         # Apply scaling
-        image[:, :, 2] = np.clip(image[:, :, 2] * k_R, 0, 1)
-        image[:, :, 0] = np.clip(image[:, :, 0] * k_B, 0, 1)
+        outImg[:, :, 2] = np.clip(image[:, :, 2] * k_R, 0, 1)
+        outImg[:, :, 0] = np.clip(image[:, :, 0] * k_B, 0, 1)
         
-        return image
+        return outImg
 
 
 

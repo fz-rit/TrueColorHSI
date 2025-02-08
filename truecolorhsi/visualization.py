@@ -77,9 +77,9 @@ def vanilla_hsi_to_rgb(hsi_cube: np.ndarray,
         green_range = (540, 590)
         red_range = (585, 725)
     else:
-        blue_range = (450, 495)
-        green_range = (500, 575)
-        red_range = (620, 750)
+        blue_range = (460, 480)
+        green_range = (530, 560)
+        red_range = (620, 680)
     
 
     iblue_start = get_band_index(band_centers, blue_range[0])
@@ -153,7 +153,7 @@ def vanilla_visualization(input_path: Union[str, Path],
     hyperspec_cube, band_centers = read_HSI_data(input_path)
 
     viz_rgb = vanilla_hsi_to_rgb(hyperspec_cube, band_centers, input_path)
-    print("- RGB image extracted from the hyperspectral image.")
+    print("- RGB image extracted from the image c.")
     viz_norm = exposure.rescale_intensity(viz_rgb, out_range=(0, 1))
     print("- RGB image normalized to (0, 1) to fit into the sRGB range.")    
 
@@ -294,11 +294,11 @@ def colorimetric_visualization(input_path: Union[str, Path],
     
 
 if __name__ == "__main__":
-    input_folder = Path("/home/fzhcis/mylab/data/rit-cis-hyperspectral-Symeon/data")
-    infile_base_name = "Symeon_VNIR_cropped"
+    # input_folder = Path("/home/fzhcis/mylab/data/rit-cis-hyperspectral-Symeon/data")
+    # infile_base_name = "Symeon_VNIR_cropped"
 
-    # input_folder = Path("/home/fzhcis/mylab/gdrive/projects_with_Dave/for_Fei/Data/Ducky_and_Fragment")
-    # infile_base_name = "fragment_cropped_FullSpec_2"
+    input_folder = Path("/home/fzhcis/mylab/gdrive/projects_with_Dave/for_Fei/Data/Ducky_and_Fragment")
+    infile_base_name = "fragment_cropped_FullSpec_2"
 
     # input_folder = Path("/home/fzhcis/mylab/data/HeiPorSPECTRAL_example/data/subjects/P086/2021_04_15_09_22_02")
     # input_path = input_folder / "2021_04_15_09_22_02_SpecCube.dat"
@@ -310,12 +310,12 @@ if __name__ == "__main__":
     output_folder = Path("examples") / input_path.stem
     output_folder.mkdir(parents=True, exist_ok=True)
     print(f"Output folder: {output_folder}")
-    visualize = False
-    saveimages = True
+    visualize = True
+    saveimages = False
     illuminant = 'D65' # choose from 'D50', 'D55', 'D65', 'D75'
 
     vanilla_display_images = vanilla_visualization(input_path, 
-                                                   wb_method='white_patch', # 'ml_wb' or 'gray_world' or 'white_patch'
+                                                   wb_method='ml_wb', # 'ml_wb' or 'gray_world' or 'white_patch'
                                                    visualize=visualize, 
                                                    saveimages=saveimages, 
                                                    savefolder=output_folder)

@@ -19,6 +19,105 @@
 import numpy as np
 import numpy.matlib
 import cv2
+from skimage.feature import blob_log
+from skimage.color import rgb2gray
+
+class Classic_WB:
+    """
+    A class implementing Classic White Balance correction methods:
+    - Gray World Assumption
+    - White Patch (Max RGB) Assumption
+    """
+    def checkout_input_range(self, image: np.ndarray) -> bool:
+        """
+        Checks if the input image is in the range [0, 1].
+        
+        Args:
+            image (np.ndarray): Input image as a NumPy array of shape (H, W, 3).
+        
+        Returns:
+            bool: True if the image is in the range [0, 1], False otherwise.
+        """
+        if np.min(image) < 0 or np.max(image) > 1:
+            raise ValueError(f"Input image of the wb algorithm must be in the range [0, 1]. Current range: [{np.min(image)}, {np.max(image)}]")
+
+    
+    def gray_world_white_balance(self, image: np.ndarray) -> np.ndarray:
+        """
+        Applies Gray World white balance to an image.
+        
+        The algorithm assumes that the average color in a scene is gray, and scales
+        the red and blue channels based on the green channel's mean intensity.
+        
+        Args:
+            image (np.ndarray): Input image as a NumPy array of shape (H, W, 3).
+        
+        Returns:
+            np.ndarray: White-balanced image with pixel values normalized between [0, 1].
+        """
+        self.checkout_input_range(image)
+        
+        # Compute the mean of each channel
+        mean_R = np.mean(image[:, :, 2])  # Red channel
+        mean_G = np.mean(image[:, :, 1])  # Green channel
+        mean_B = np.mean(image[:, :, 0])  # Blue channel
+        
+        # Compute scaling factors
+        k_R = mean_G / mean_R
+        k_B = mean_G / mean_B
+        
+        outImg = image.copy()
+        # Apply scaling
+        outImg[:, :, 2] = np.clip(image[:, :, 2] * k_R, 0, 1)
+        outImg[:, :, 0] = np.clip(image[:, :, 0] * k_B, 0, 1)
+        
+        return outImg
+    
+    def white_patch_white_balance(self, image: np.ndarray) -> np.ndarray:
+        """
+        Applies White Patch white balance to an image using blob detection to locate
+        the most probable white patch.
+        
+        The algorithm detects bright regions in the image using blob detection,
+        and scales the red and blue channels based on the brightest patch's intensity.
+        
+        Args:
+            image (np.ndarray): Input image as a NumPy array of shape (H, W, 3).
+        
+        Returns:
+            np.ndarray: White-balanced image with pixel values normalized between [0, 1].
+        """
+        self.checkout_input_range(image)
+        
+        # Convert image to grayscale for blob detection
+        gray = rgb2gray(image)
+        
+        # Detect blobs using Laplacian of Gaussian (LoG)
+        blobs = blob_log(gray, min_sigma=1, max_sigma=30, num_sigma=10, threshold=0.1)
+        
+        if len(blobs) > 0:
+            # Find the brightest detected blob
+            blobs = sorted(blobs, key=lambda b: gray[int(b[0]), int(b[1])], reverse=True)
+            y, x, _ = blobs[0]  # Get the coordinates of the brightest blob
+            max_R = image[int(y), int(x), 2]
+            max_G = image[int(y), int(x), 1]
+            max_B = image[int(y), int(x), 0]
+        else:
+            # Fallback to max channel values if no blobs are detected
+            max_R = np.max(image[:, :, 2])
+            max_G = np.max(image[:, :, 1])
+            max_B = np.max(image[:, :, 0])
+        
+        # Compute scaling factors
+        k_R = max_G / max_R
+        k_B = max_G / max_B
+        
+        # Apply scaling
+        image[:, :, 2] = np.clip(image[:, :, 2] * k_R, 0, 1)
+        image[:, :, 0] = np.clip(image[:, :, 0] * k_B, 0, 1)
+        
+        return image
+
 
 
 class WBsRGB:

@@ -1,6 +1,6 @@
 include README.md
 include LICENSE
-recursive-include examples *
-recursive-include models *
-recursive-include notebooks *
-recursive-include assets *
+recursive-include TrueColorHSI/examples *
+recursive-include TrueColorHSI/models *.npy
+recursive-include TrueColorHSI/notebooks *
+recursive-include TrueColorHSI/assets *

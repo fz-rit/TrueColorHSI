@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='TrueColorHSI',  
-    version='0.1.6',
+    version='0.1.7',
     packages=find_packages(),
     include_package_data=True,  # Ensure package data is included
     install_requires=[

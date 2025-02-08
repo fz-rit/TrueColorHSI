@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='TrueColorHSI',  
-    version='0.1.5',
+    version='0.1.6',
     packages=find_packages(),
     include_package_data=True,  # Ensure package data is included
     install_requires=[
@@ -12,7 +12,8 @@ setup(
         ' scikit-image',
         ' pysptools',
         'colour-science',
-        'ipykernel'
+        'ipykernel',
+        'opencv-python',
     ],
     author='Fei Zhang',
     author_email='fzhcis@rit.edu',

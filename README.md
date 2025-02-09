@@ -32,6 +32,7 @@ pip install TrueColorHSI
 from truecolorhsi.visualization import vanilla_visualization, colorimetric_visualization
 from pathlib import Path
 input_path = Path("path/to/the/input/file")
+output_dir = Path("path/to/the/output/folder")
 vanilla_display_images = vanilla_visualization(input_path, visualize=True, saveimages=True)
 colorimetric_display_images = colorimetric_visualization(input_path, visualize=True, saveimages=True)
 ```

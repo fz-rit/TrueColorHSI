@@ -180,6 +180,7 @@ def vanilla_visualization(input_path: Union[str, Path],
     
     if saveimages:
         savefolder = input_path.parent / 'outputs' if savefolder is None else savefolder
+        savefolder.mkdir(parents=True, exist_ok=True)
         for title, image in zip(subplot_titles, display_images):
             plt.imsave(savefolder / f'{input_path.stem}_{title}.png', image)
 
@@ -286,6 +287,7 @@ def colorimetric_visualization(input_path: Union[str, Path],
         
     if saveimages:
         savefolder = input_path.parent / 'outputs' if savefolder is None else savefolder
+        savefolder.mkdir(parents=True, exist_ok=True)
         for title, image in zip(subplot_titles, display_images):
             plt.imsave(savefolder / f'{input_path.stem}_{title}.png', image)
     
@@ -308,7 +310,6 @@ if __name__ == "__main__":
     input_path = input_folder / (infile_base_name + ".hdr")
 
     output_folder = Path("examples") / input_path.stem
-    output_folder.mkdir(parents=True, exist_ok=True)
     print(f"Output folder: {output_folder}")
     visualize = True
     saveimages = False

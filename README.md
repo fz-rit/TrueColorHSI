@@ -20,8 +20,7 @@ Note: The input data need to cover the full visible spectrum (400-700 nm) to ach
 
 
 ## Installation:
-- First, prepare your dataset, a directory you want to run the file, and an output directory. 
-- Prepare a new Python environment for the package.
+- First, prepare your dataset, an output directory, and a new Python environment.
 - Then you can install `TrueColorHSI` via `pip`:
 ```bash
 pip install TrueColorHSI
